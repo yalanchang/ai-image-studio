@@ -6,19 +6,19 @@ import { Badge } from "@/components/ui/badge";
 import { Zap, Sparkles, Images, Shield, ArrowRight, Star, Wand2, Layers, Clock } from "lucide-react";
 
 const features = [
-  { icon: Sparkles, title: "AI Image Generation", desc: "Generate stunning images from text prompts using state-of-the-art AI models with style controls." },
-  { icon: Wand2, title: "Advanced Editing", desc: "Style transfer, background replacement, object removal, and upscaling powered by AI." },
-  { icon: Zap, title: "Real-time Processing", desc: "WebSocket-powered live progress updates so you always know the status of your generation." },
-  { icon: Layers, title: "Prompt Assistant", desc: "AI-powered prompt optimization to enhance your descriptions for better results." },
-  { icon: Images, title: "Image Gallery", desc: "Browse community creations, get inspired, and share your best work publicly." },
-  { icon: Shield, title: "Credit System", desc: "Flexible credit-based pricing. Different operations consume different amounts of credits." },
+  { icon: Sparkles, title: "AI 圖像生成", desc: "透過文字提示詞，使用最先進的 AI 模型生成精美圖像，支援多種藝術風格控制。" },
+  { icon: Wand2, title: "進階圖像編輯", desc: "風格遷移、背景替換、物件移除與超解析度放大，全由 AI 驅動。" },
+  { icon: Zap, title: "即時處理進度", desc: "WebSocket 即時推送生成進度，讓您隨時掌握任務狀態，無需等待刷新。" },
+  { icon: Layers, title: "提示詞助手", desc: "AI 自動優化您的提示詞描述，讓生成結果更精準、更符合預期。" },
+  { icon: Images, title: "社群圖庫", desc: "瀏覽社群創作、尋找靈感，並將您的最佳作品公開分享給所有人。" },
+  { icon: Shield, title: "彈性積分制度", desc: "按使用量計費，不同操作消耗不同積分，靈活且透明，無隱藏費用。" },
 ];
 
 const stats = [
-  { value: "10M+", label: "Images Generated" },
-  { value: "500K+", label: "Active Users" },
-  { value: "99.9%", label: "Uptime" },
-  { value: "<30s", label: "Avg. Generation" },
+  { value: "1,000萬+", label: "已生成圖像" },
+  { value: "50萬+", label: "活躍用戶" },
+  { value: "99.9%", label: "服務可用率" },
+  { value: "<30秒", label: "平均生成時間" },
 ];
 
 export default function Home() {
@@ -26,78 +26,78 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Nav */}
+      {/* 頂部導覽列 */}
       <nav className="fixed top-0 inset-x-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-md">
         <div className="container flex items-center h-16 gap-6">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <Zap className="w-4 h-4 text-primary-foreground" />
             </div>
-            <span className="font-display font-bold text-lg">AI Studio</span>
+            <span className="font-display font-bold text-lg">AI 圖像工作室</span>
           </div>
           <div className="hidden md:flex items-center gap-6 ml-6">
-            <Link href="/gallery"><span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">Gallery</span></Link>
-            <Link href="/credits"><span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">Pricing</span></Link>
+            <Link href="/gallery"><span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">社群圖庫</span></Link>
+            <Link href="/credits"><span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">積分方案</span></Link>
           </div>
           <div className="ml-auto flex items-center gap-3">
             {isAuthenticated ? (
               <Link href="/generate">
-                <Button size="sm"><Sparkles className="w-4 h-4 mr-1.5" />Start Creating</Button>
+                <Button size="sm"><Sparkles className="w-4 h-4 mr-1.5" />開始創作</Button>
               </Link>
             ) : (
               <Button size="sm" onClick={() => window.location.href = getLoginUrl()}>
-                <Zap className="w-4 h-4 mr-1.5" />Get Started Free
+                <Zap className="w-4 h-4 mr-1.5" />免費開始使用
               </Button>
             )}
           </div>
         </div>
       </nav>
 
-      {/* Hero */}
+      {/* Hero 區塊 */}
       <section className="pt-32 pb-20 px-4 relative overflow-hidden">
-        {/* Background glow */}
+        {/* 背景光暈 */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-20 right-1/4 w-64 h-64 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="container relative text-center max-w-4xl mx-auto">
           <Badge variant="secondary" className="mb-6 gap-2 px-4 py-1.5">
             <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
-            <span className="text-xs">Powered by Google Gemini AI</span>
+            <span className="text-xs">由 Google Gemini AI 強力驅動</span>
           </Badge>
 
           <h1 className="font-display text-5xl md:text-7xl font-bold leading-tight mb-6">
-            Create Stunning Images{" "}
+            用 AI 創作{" "}
             <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
-              with AI
+              震撼視覺
             </span>
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-            Transform your imagination into breathtaking visuals. Generate, edit, and share AI-powered artwork with professional-grade tools and real-time processing.
+            將您的想像力轉化為令人驚嘆的視覺作品。使用專業級 AI 工具生成、編輯並分享圖像，即時處理、毫秒回饋。
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             {isAuthenticated ? (
               <Link href="/generate">
                 <Button size="lg" className="gap-2 px-8 h-12 text-base">
-                  <Sparkles className="w-5 h-5" />Start Generating
+                  <Sparkles className="w-5 h-5" />立即開始生成
                   <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
             ) : (
               <Button size="lg" className="gap-2 px-8 h-12 text-base" onClick={() => window.location.href = getLoginUrl()}>
-                <Sparkles className="w-5 h-5" />Start Free — 100 Credits
+                <Sparkles className="w-5 h-5" />免費開始 — 贈送 100 積分
                 <ArrowRight className="w-4 h-4" />
               </Button>
             )}
             <Link href="/gallery">
               <Button size="lg" variant="outline" className="gap-2 px-8 h-12 text-base bg-transparent">
-                <Images className="w-5 h-5" />View Gallery
+                <Images className="w-5 h-5" />瀏覽圖庫
               </Button>
             </Link>
           </div>
 
-          {/* Stats */}
+          {/* 數據統計 */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20 pt-10 border-t border-border/50">
             {stats.map(({ value, label }) => (
               <div key={label} className="text-center">
@@ -109,13 +109,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features */}
+      {/* 功能特色 */}
       <section className="py-20 px-4 bg-card/30">
         <div className="container max-w-6xl mx-auto">
           <div className="text-center mb-14">
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">Everything You Need to Create</h2>
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">一站式 AI 創作平台</h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              A complete AI image creation platform built for professionals and creators alike.
+              為專業創作者與設計師打造，集生成、編輯、管理於一體的完整 AI 圖像工作流程。
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -132,61 +132,61 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Credit pricing */}
+      {/* 積分方案 */}
       <section className="py-20 px-4">
         <div className="container max-w-4xl mx-auto text-center">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">Simple Credit Pricing</h2>
-          <p className="text-muted-foreground text-lg mb-12">Pay only for what you use. No subscriptions, no hidden fees.</p>
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">透明積分定價</h2>
+          <p className="text-muted-foreground text-lg mb-12">按使用量付費，無訂閱費，無隱藏費用，用多少付多少。</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { name: "Generate", cost: 10, desc: "Standard image generation", icon: Sparkles },
-              { name: "Edit & Style", cost: 12, desc: "Style transfer & editing", icon: Wand2 },
-              { name: "Advanced", cost: 20, desc: "Object removal & upscale", icon: Layers },
+              { name: "圖像生成", cost: 10, desc: "標準圖像生成", icon: Sparkles },
+              { name: "編輯與風格", cost: 12, desc: "風格遷移與圖像編輯", icon: Wand2 },
+              { name: "進階處理", cost: 20, desc: "物件移除與超解析度", icon: Layers },
             ].map(({ name, cost, desc, icon: Icon }) => (
               <div key={name} className="p-6 rounded-xl bg-card border border-border text-center">
                 <Icon className="w-8 h-8 text-primary mx-auto mb-3" />
                 <div className="font-display font-bold text-xl mb-1">{name}</div>
-                <div className="text-3xl font-bold text-primary mb-1">{cost}<span className="text-sm text-muted-foreground font-normal"> credits</span></div>
+                <div className="text-3xl font-bold text-primary mb-1">{cost}<span className="text-sm text-muted-foreground font-normal"> 積分</span></div>
                 <div className="text-sm text-muted-foreground">{desc}</div>
               </div>
             ))}
           </div>
           <div className="mt-8 flex items-center justify-center gap-2 text-sm text-muted-foreground">
             <Clock className="w-4 h-4" />
-            New users receive 100 free credits on signup
+            新用戶註冊即贈 100 積分，立即體驗
           </div>
         </div>
       </section>
 
-      {/* CTA */}
+      {/* 行動呼籲 */}
       <section className="py-20 px-4 bg-card/30">
         <div className="container max-w-2xl mx-auto text-center">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">Ready to Create?</h2>
-          <p className="text-muted-foreground text-lg mb-8">Join thousands of creators already using AI Studio.</p>
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">準備好開始創作了嗎？</h2>
+          <p className="text-muted-foreground text-lg mb-8">加入數千位已在使用 AI 圖像工作室的創作者行列。</p>
           {isAuthenticated ? (
             <Link href="/generate">
               <Button size="lg" className="gap-2 px-10 h-12 text-base">
-                <Sparkles className="w-5 h-5" />Open Studio
+                <Sparkles className="w-5 h-5" />進入工作室
               </Button>
             </Link>
           ) : (
             <Button size="lg" className="gap-2 px-10 h-12 text-base" onClick={() => window.location.href = getLoginUrl()}>
-              <Zap className="w-5 h-5" />Get Started — It's Free
+              <Zap className="w-5 h-5" />免費開始使用
             </Button>
           )}
         </div>
       </section>
 
-      {/* Footer */}
+      {/* 頁腳 */}
       <footer className="border-t border-border py-8 px-4">
         <div className="container flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded bg-primary flex items-center justify-center">
               <Zap className="w-3 h-3 text-primary-foreground" />
             </div>
-            <span className="font-display font-semibold text-sm">AI Studio</span>
+            <span className="font-display font-semibold text-sm">AI 圖像工作室</span>
           </div>
-          <p className="text-xs text-muted-foreground">© 2026 AI Studio. All rights reserved.</p>
+          <p className="text-xs text-muted-foreground">© 2026 AI 圖像工作室。版權所有。</p>
         </div>
       </footer>
     </div>

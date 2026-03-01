@@ -4,7 +4,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Heart, Eye, Download, Sparkles, Loader2, Star } from "lucide-react";
+import { Heart, Download, Sparkles, Loader2, Star } from "lucide-react";
 
 export default function Gallery() {
   const { isAuthenticated } = useAuth();
@@ -14,7 +14,7 @@ export default function Gallery() {
   const { data: likedData } = trpc.gallery.myLikes.useQuery(undefined, { enabled: isAuthenticated });
   const likeMutation = trpc.gallery.like.useMutation({
     onSuccess: (result) => {
-      toast.success(result.liked ? "Added to favorites" : "Removed from favorites");
+      toast.success(result.liked ? "已加入收藏" : "已取消收藏");
       refetch();
     },
     onError: (err) => toast.error(err.message),
@@ -25,15 +25,15 @@ export default function Gallery() {
   return (
     <div className="min-h-full p-6">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
+        {/* 標題 */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="font-display text-3xl font-bold mb-1">Community Gallery</h1>
-            <p className="text-muted-foreground">Explore AI-generated artwork from the community</p>
+            <h1 className="font-display text-3xl font-bold mb-1">社群圖庫</h1>
+            <p className="text-muted-foreground">探索社群成員的 AI 創作作品</p>
           </div>
           <Badge variant="secondary" className="gap-1.5">
             <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
-            {data?.total ?? 0} artworks
+            {data?.total ?? 0} 件作品
           </Badge>
         </div>
 
@@ -44,8 +44,8 @@ export default function Gallery() {
         ) : !data?.items.length ? (
           <div className="text-center py-20">
             <Sparkles className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="font-display font-semibold text-lg mb-2">No images yet</h3>
-            <p className="text-muted-foreground text-sm">Be the first to share your AI creations!</p>
+            <h3 className="font-display font-semibold text-lg mb-2">目前尚無作品</h3>
+            <p className="text-muted-foreground text-sm">成為第一個分享 AI 創作的人！</p>
           </div>
         ) : (
           <>
@@ -54,11 +54,11 @@ export default function Gallery() {
                 <div key={item.id} className="break-inside-avoid group relative rounded-xl overflow-hidden bg-card border border-border hover:border-primary/50 transition-all">
                   <img
                     src={item.imageUrl}
-                    alt={item.title ?? "AI Generated"}
+                    alt={item.title ?? "AI 生成圖像"}
                     className="w-full object-cover"
                     loading="lazy"
                   />
-                  {/* Overlay */}
+                  {/* 懸停遮罩 */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                     <div className="absolute bottom-0 left-0 right-0 p-3">
                       <p className="text-white text-xs line-clamp-2 mb-2">{item.prompt}</p>
@@ -67,12 +67,12 @@ export default function Gallery() {
                           <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-[10px] text-primary-foreground font-bold">
                             {item.userName?.[0]?.toUpperCase() ?? "A"}
                           </div>
-                          <span className="text-white text-xs">{item.userName ?? "Anonymous"}</span>
+                          <span className="text-white text-xs">{item.userName ?? "匿名"}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => {
-                              if (!isAuthenticated) { toast.error("Sign in to like"); return; }
+                              if (!isAuthenticated) { toast.error("請先登入才能收藏"); return; }
                               likeMutation.mutate({ galleryItemId: item.id });
                             }}
                             className={`flex items-center gap-1 text-xs transition-colors ${likedIds.has(item.id) ? "text-red-400" : "text-white/80 hover:text-red-400"}`}
@@ -93,7 +93,7 @@ export default function Gallery() {
                       </div>
                     </div>
                   </div>
-                  {/* Style badge */}
+                  {/* 風格標籤 */}
                   {item.style && (
                     <div className="absolute top-2 left-2">
                       <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5 bg-black/60 text-white border-0">
@@ -105,17 +105,17 @@ export default function Gallery() {
               ))}
             </div>
 
-            {/* Pagination */}
+            {/* 分頁 */}
             {data.total > 20 && (
               <div className="flex items-center justify-center gap-3 mt-10">
                 <Button variant="outline" size="sm" disabled={page === 1} onClick={() => setPage(p => p - 1)}>
-                  Previous
+                  上一頁
                 </Button>
                 <span className="text-sm text-muted-foreground">
-                  Page {page} of {Math.ceil(data.total / 20)}
+                  第 {page} 頁，共 {Math.ceil(data.total / 20)} 頁
                 </span>
                 <Button variant="outline" size="sm" disabled={page >= Math.ceil(data.total / 20)} onClick={() => setPage(p => p + 1)}>
-                  Next
+                  下一頁
                 </Button>
               </div>
             )}

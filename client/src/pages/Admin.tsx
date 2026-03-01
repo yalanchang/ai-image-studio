@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import {
   ShieldCheck, Users, BarChart3, Coins, Search, Loader2,
-  TrendingUp, Image, Zap, Gift, CheckCircle, XCircle, Clock
+  TrendingUp, Image, Zap, Gift, CheckCircle, XCircle
 } from "lucide-react";
 
 function StatCard({ icon: Icon, label, value, sub, color = "text-primary" }: {
@@ -42,13 +42,13 @@ export default function Admin() {
   const { data: packages, refetch: refetchPkgs } = trpc.admin.packages.useQuery(undefined, { enabled: isAuthenticated && user?.role === "admin" });
 
   const updateRoleMutation = trpc.admin.updateUserRole.useMutation({
-    onSuccess: () => { toast.success("Role updated"); refetchUsers(); },
+    onSuccess: () => { toast.success("角色已更新"); refetchUsers(); },
     onError: (err) => toast.error(err.message),
   });
 
   const grantCreditsMutation = trpc.admin.grantCredits.useMutation({
     onSuccess: (data) => {
-      toast.success(`Granted! New balance: ${data.newBalance}`);
+      toast.success(`已發放積分！新餘額：${data.newBalance}`);
       setGrantUserId(null); setGrantAmount(""); setGrantReason("");
       refetchUsers();
     },
@@ -56,7 +56,7 @@ export default function Admin() {
   });
 
   const upsertPackageMutation = trpc.admin.upsertPackage.useMutation({
-    onSuccess: () => { toast.success("Package saved"); refetchPkgs(); setNewPkg({ name: "", credits: "", price: "", description: "", isFeatured: false }); },
+    onSuccess: () => { toast.success("方案已儲存"); refetchPkgs(); setNewPkg({ name: "", credits: "", price: "", description: "", isFeatured: false }); },
     onError: (err) => toast.error(err.message),
   });
 
@@ -64,8 +64,8 @@ export default function Admin() {
     return (
       <div className="flex flex-col items-center justify-center min-h-full py-20 px-4 text-center">
         <ShieldCheck className="w-12 h-12 text-muted-foreground mb-4" />
-        <h2 className="font-display text-xl font-semibold mb-2">Admin Access Required</h2>
-        <p className="text-muted-foreground text-sm">You don't have permission to view this page.</p>
+        <h2 className="font-display text-xl font-semibold mb-2">需要管理員權限</h2>
+        <p className="text-muted-foreground text-sm">您沒有權限存取此頁面。</p>
       </div>
     );
   }
@@ -74,52 +74,52 @@ export default function Admin() {
     <div className="min-h-full p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="font-display text-3xl font-bold mb-1">Admin Dashboard</h1>
-          <p className="text-muted-foreground">System overview and management</p>
+          <h1 className="font-display text-3xl font-bold mb-1">管理後台</h1>
+          <p className="text-muted-foreground">系統概覽與管理</p>
         </div>
 
         <Tabs defaultValue="overview">
           <TabsList className="mb-6 bg-card border border-border">
-            <TabsTrigger value="overview" className="gap-2"><BarChart3 className="w-4 h-4" />Overview</TabsTrigger>
-            <TabsTrigger value="users" className="gap-2"><Users className="w-4 h-4" />Users</TabsTrigger>
-            <TabsTrigger value="packages" className="gap-2"><Coins className="w-4 h-4" />Packages</TabsTrigger>
+            <TabsTrigger value="overview" className="gap-2"><BarChart3 className="w-4 h-4" />系統概覽</TabsTrigger>
+            <TabsTrigger value="users" className="gap-2"><Users className="w-4 h-4" />用戶管理</TabsTrigger>
+            <TabsTrigger value="packages" className="gap-2"><Coins className="w-4 h-4" />積分方案</TabsTrigger>
           </TabsList>
 
-          {/* Overview */}
+          {/* 系統概覽 */}
           <TabsContent value="overview">
             {statsLoading ? (
               <div className="flex items-center justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
             ) : stats ? (
               <div className="space-y-6">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <StatCard icon={Users} label="Total Users" value={stats.totalUsers} />
-                  <StatCard icon={Image} label="Total Jobs" value={stats.totalJobs ?? 0} />
-                  <StatCard icon={CheckCircle} label="Completed" value={stats.completedJobs ?? 0} color="text-green-400" />
-                  <StatCard icon={XCircle} label="Failed" value={stats.failedJobs ?? 0} color="text-red-400" />
+                  <StatCard icon={Users} label="總用戶數" value={stats.totalUsers} />
+                  <StatCard icon={Image} label="總任務數" value={stats.totalJobs ?? 0} />
+                  <StatCard icon={CheckCircle} label="已完成" value={stats.completedJobs ?? 0} color="text-green-400" />
+                  <StatCard icon={XCircle} label="失敗" value={stats.failedJobs ?? 0} color="text-red-400" />
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <StatCard icon={Zap} label="Jobs Today" value={stats.jobsToday ?? 0} sub="Last 24 hours" />
-                  <StatCard icon={TrendingUp} label="Jobs This Week" value={stats.jobsWeek ?? 0} sub="Last 7 days" />
-                  <StatCard icon={Coins} label="Credits Spent" value={stats.totalSpent ?? 0} sub="All time" color="text-yellow-400" />
+                  <StatCard icon={Zap} label="今日任務" value={stats.jobsToday ?? 0} sub="過去 24 小時" />
+                  <StatCard icon={TrendingUp} label="本週任務" value={stats.jobsWeek ?? 0} sub="過去 7 天" />
+                  <StatCard icon={Coins} label="已消耗積分" value={stats.totalSpent ?? 0} sub="累計" color="text-yellow-400" />
                 </div>
-                {/* Success rate */}
+                {/* 系統健康度 */}
                 <div className="p-5 rounded-xl bg-card border border-border">
-                  <h3 className="font-display font-semibold mb-4">System Health</h3>
+                  <h3 className="font-display font-semibold mb-4">系統健康度</h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <div>
-                      <div className="text-xs text-muted-foreground mb-1">Success Rate</div>
+                      <div className="text-xs text-muted-foreground mb-1">成功率</div>
                       <div className="text-2xl font-bold text-green-400">
                         {(stats.totalJobs ?? 0) > 0 ? Math.round(((stats.completedJobs ?? 0) / (stats.totalJobs ?? 1)) * 100) : 0}%
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs text-muted-foreground mb-1">Failure Rate</div>
+                      <div className="text-xs text-muted-foreground mb-1">失敗率</div>
                       <div className="text-2xl font-bold text-red-400">
                         {(stats.totalJobs ?? 0) > 0 ? Math.round(((stats.failedJobs ?? 0) / (stats.totalJobs ?? 1)) * 100) : 0}%
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs text-muted-foreground mb-1">Credits Recharged</div>
+                      <div className="text-xs text-muted-foreground mb-1">已儲值積分</div>
                       <div className="text-2xl font-bold text-yellow-400">{stats.totalEarned}</div>
                     </div>
                   </div>
@@ -128,12 +128,12 @@ export default function Admin() {
             ) : null}
           </TabsContent>
 
-          {/* Users */}
+          {/* 用戶管理 */}
           <TabsContent value="users">
             <div className="space-y-4">
               <div className="relative max-w-sm">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input placeholder="Search users..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+                <Input placeholder="搜尋用戶..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
               </div>
 
               {usersLoading ? (
@@ -144,12 +144,12 @@ export default function Admin() {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b border-border bg-muted/30">
-                          <th className="text-left px-4 py-3 text-xs text-muted-foreground font-medium">User</th>
-                          <th className="text-left px-4 py-3 text-xs text-muted-foreground font-medium">Role</th>
-                          <th className="text-left px-4 py-3 text-xs text-muted-foreground font-medium">Credits</th>
-                          <th className="text-left px-4 py-3 text-xs text-muted-foreground font-medium">Generated</th>
-                          <th className="text-left px-4 py-3 text-xs text-muted-foreground font-medium">Joined</th>
-                          <th className="text-left px-4 py-3 text-xs text-muted-foreground font-medium">Actions</th>
+                          <th className="text-left px-4 py-3 text-xs text-muted-foreground font-medium">用戶</th>
+                          <th className="text-left px-4 py-3 text-xs text-muted-foreground font-medium">角色</th>
+                          <th className="text-left px-4 py-3 text-xs text-muted-foreground font-medium">積分</th>
+                          <th className="text-left px-4 py-3 text-xs text-muted-foreground font-medium">生成次數</th>
+                          <th className="text-left px-4 py-3 text-xs text-muted-foreground font-medium">加入日期</th>
+                          <th className="text-left px-4 py-3 text-xs text-muted-foreground font-medium">操作</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -175,9 +175,9 @@ export default function Admin() {
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="user">User</SelectItem>
-                                  <SelectItem value="premium">Premium</SelectItem>
-                                  <SelectItem value="admin">Admin</SelectItem>
+                                  <SelectItem value="user">一般</SelectItem>
+                                  <SelectItem value="premium">高級</SelectItem>
+                                  <SelectItem value="admin">管理員</SelectItem>
                                 </SelectContent>
                               </Select>
                             </td>
@@ -186,20 +186,20 @@ export default function Admin() {
                                 <Coins className="w-3 h-3 text-yellow-400" />{u.credits}
                               </Badge>
                             </td>
-                            <td className="px-4 py-3 text-xs text-muted-foreground">{u.totalGenerated}</td>
-                            <td className="px-4 py-3 text-xs text-muted-foreground">{new Date(u.createdAt).toLocaleDateString()}</td>
+                            <td className="px-4 py-3 text-xs text-muted-foreground">{u.totalGenerated} 次</td>
+                            <td className="px-4 py-3 text-xs text-muted-foreground">{new Date(u.createdAt).toLocaleDateString("zh-TW")}</td>
                             <td className="px-4 py-3">
                               {grantUserId === u.id ? (
                                 <div className="flex items-center gap-1.5">
                                   <Input
                                     type="number"
-                                    placeholder="Amount"
+                                    placeholder="數量"
                                     value={grantAmount}
                                     onChange={e => setGrantAmount(e.target.value)}
                                     className="h-7 w-20 text-xs bg-background"
                                   />
                                   <Input
-                                    placeholder="Reason"
+                                    placeholder="原因"
                                     value={grantReason}
                                     onChange={e => setGrantReason(e.target.value)}
                                     className="h-7 w-24 text-xs bg-background"
@@ -216,7 +216,7 @@ export default function Admin() {
                                 </div>
                               ) : (
                                 <Button size="sm" variant="ghost" className="h-7 text-xs gap-1" onClick={() => setGrantUserId(u.id)}>
-                                  <Gift className="w-3 h-3" />Grant
+                                  <Gift className="w-3 h-3" />發放積分
                                 </Button>
                               )}
                             </td>
@@ -230,46 +230,46 @@ export default function Admin() {
             </div>
           </TabsContent>
 
-          {/* Packages */}
+          {/* 積分方案 */}
           <TabsContent value="packages">
             <div className="space-y-6">
-              {/* Existing packages */}
+              {/* 現有方案 */}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {packages?.map((pkg) => (
                   <div key={pkg.id} className="p-4 rounded-xl bg-card border border-border">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-semibold">{pkg.name}</span>
-                      {pkg.isFeatured && <Badge className="text-[10px]">Featured</Badge>}
+                      {pkg.isFeatured && <Badge className="text-[10px]">推薦</Badge>}
                     </div>
-                    <div className="text-2xl font-bold text-primary mb-1">{pkg.credits} <span className="text-sm text-muted-foreground font-normal">credits</span></div>
+                    <div className="text-2xl font-bold text-primary mb-1">{pkg.credits} <span className="text-sm text-muted-foreground font-normal">積分</span></div>
                     <div className="text-sm text-muted-foreground mb-3">${pkg.price} {pkg.currency}</div>
                     {pkg.description && <p className="text-xs text-muted-foreground">{pkg.description}</p>}
                   </div>
                 ))}
               </div>
 
-              {/* Add new package */}
+              {/* 新增方案 */}
               <div className="p-5 rounded-xl bg-card border border-border">
-                <h3 className="font-display font-semibold mb-4">Add Credit Package</h3>
+                <h3 className="font-display font-semibold mb-4">新增積分方案</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
-                  <Input placeholder="Package name" value={newPkg.name} onChange={e => setNewPkg(p => ({ ...p, name: e.target.value }))} className="bg-background" />
-                  <Input type="number" placeholder="Credits" value={newPkg.credits} onChange={e => setNewPkg(p => ({ ...p, credits: e.target.value }))} className="bg-background" />
-                  <Input type="number" placeholder="Price (USD)" value={newPkg.price} onChange={e => setNewPkg(p => ({ ...p, price: e.target.value }))} className="bg-background" />
-                  <Input placeholder="Description (optional)" value={newPkg.description} onChange={e => setNewPkg(p => ({ ...p, description: e.target.value }))} className="bg-background col-span-2" />
+                  <Input placeholder="方案名稱" value={newPkg.name} onChange={e => setNewPkg(p => ({ ...p, name: e.target.value }))} className="bg-background" />
+                  <Input type="number" placeholder="積分數量" value={newPkg.credits} onChange={e => setNewPkg(p => ({ ...p, credits: e.target.value }))} className="bg-background" />
+                  <Input type="number" placeholder="價格（美元）" value={newPkg.price} onChange={e => setNewPkg(p => ({ ...p, price: e.target.value }))} className="bg-background" />
+                  <Input placeholder="描述（選填）" value={newPkg.description} onChange={e => setNewPkg(p => ({ ...p, description: e.target.value }))} className="bg-background col-span-2" />
                   <div className="flex items-center gap-2">
                     <input type="checkbox" id="featured" checked={newPkg.isFeatured} onChange={e => setNewPkg(p => ({ ...p, isFeatured: e.target.checked }))} />
-                    <label htmlFor="featured" className="text-sm">Featured</label>
+                    <label htmlFor="featured" className="text-sm">設為推薦</label>
                   </div>
                 </div>
                 <Button
                   onClick={() => {
-                    if (!newPkg.name || !newPkg.credits || !newPkg.price) { toast.error("Fill all required fields"); return; }
+                    if (!newPkg.name || !newPkg.credits || !newPkg.price) { toast.error("請填寫所有必填欄位"); return; }
                     upsertPackageMutation.mutate({ name: newPkg.name, credits: Number(newPkg.credits), price: Number(newPkg.price), description: newPkg.description || undefined, isFeatured: newPkg.isFeatured });
                   }}
                   disabled={upsertPackageMutation.isPending}
                 >
                   {upsertPackageMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                  Add Package
+                  新增方案
                 </Button>
               </div>
             </div>

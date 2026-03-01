@@ -41,3 +41,13 @@
 - [x] Vitest unit tests for credit system (14 tests, all passing)
 - [x] Vitest unit tests for image generation router
 - [x] Final checkpoint and delivery
+
+## 繁體中文本地化
+- [x] AppLayout 導航欄與側邊欄
+- [x] Home 首頁 Landing Page
+- [x] Generate 圖像生成頁面
+- [x] Gallery 社群圖庫頁面
+- [x] MyImages 我的圖片頁面
+- [x] Credits 積分管理頁面
+- [x] Admin 管理後台頁面
+- [x] NotFound 404 頁面
