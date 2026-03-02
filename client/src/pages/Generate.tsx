@@ -118,7 +118,7 @@ export default function Generate() {
       <div className="max-w-6xl mx-auto">
         {/* 標題 */}
         <div className="mb-8">
-          <h1 className="font-display text-3xl font-bold mb-2">AI 圖像工作室</h1>
+          <h1 className="font-display text-3xl font-bold mb-2">INSTANT</h1>
           <p className="text-muted-foreground">使用 AI 生成與編輯圖像，描述您想創作的內容即可開始。</p>
         </div>
 

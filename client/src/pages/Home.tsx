@@ -33,7 +33,7 @@ export default function Home() {
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <Zap className="w-4 h-4 text-primary-foreground" />
             </div>
-            <span className="font-display font-bold text-lg">AI 圖像工作室</span>
+            <span className="font-display font-bold text-lg">INSTANT</span>
           </div>
           <div className="hidden md:flex items-center gap-6 ml-6">
             <Link href="/gallery"><span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">社群圖庫</span></Link>
@@ -162,7 +162,7 @@ export default function Home() {
       <section className="py-20 px-4 bg-card/30">
         <div className="container max-w-2xl mx-auto text-center">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">準備好開始創作了嗎？</h2>
-          <p className="text-muted-foreground text-lg mb-8">加入數千位已在使用 AI 圖像工作室的創作者行列。</p>
+          <p className="text-muted-foreground text-lg mb-8">加入數千位已在使用 INSTANT 的創作者行列。</p>
           {isAuthenticated ? (
             <Link href="/generate">
               <Button size="lg" className="gap-2 px-10 h-12 text-base">
@@ -184,9 +184,9 @@ export default function Home() {
             <div className="w-6 h-6 rounded bg-primary flex items-center justify-center">
               <Zap className="w-3 h-3 text-primary-foreground" />
             </div>
-            <span className="font-display font-semibold text-sm">AI 圖像工作室</span>
+            <span className="font-display font-semibold text-sm">INSTANT</span>
           </div>
-          <p className="text-xs text-muted-foreground">© 2026 AI 圖像工作室。版權所有。</p>
+          <p className="text-xs text-muted-foreground">© 2026 INSTANT。版權所有。</p>
         </div>
       </footer>
     </div>
