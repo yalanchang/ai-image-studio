@@ -51,3 +51,6 @@
 - [x] Credits 積分管理頁面
 - [x] Admin 管理後台頁面
 - [x] NotFound 404 頁面
+
+## Bug 修復
+- [x] 修復 createImageJob / createGalleryItem insertId 為 NaN 導致查詢失敗

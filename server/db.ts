@@ -99,8 +99,9 @@ export async function updateUserRole(userId: number, role: "user" | "premium" | 
 export async function createImageJob(data: InsertImageJob) {
   const db = await getDb();
   if (!db) throw new Error("DB unavailable");
-  const r = await db.insert(imageJobs).values(data);
-  const id = Number((r as any).insertId);
+  const r = await db.insert(imageJobs).values(data).$returningId();
+  const id = r[0]?.id;
+  if (!id) throw new Error("Failed to get insertId for image job");
   const job = await db.select().from(imageJobs).where(eq(imageJobs.id, id)).limit(1);
   return job[0]!;
 }
@@ -187,8 +188,9 @@ export async function getSystemCreditStats() {
 export async function createGalleryItem(data: InsertGalleryItem) {
   const db = await getDb();
   if (!db) throw new Error("DB unavailable");
-  const r = await db.insert(galleryItems).values(data);
-  const id = Number((r as any).insertId);
+  const r = await db.insert(galleryItems).values(data).$returningId();
+  const id = r[0]?.id;
+  if (!id) throw new Error("Failed to get insertId for gallery item");
   const item = await db.select().from(galleryItems).where(eq(galleryItems.id, id)).limit(1);
   return item[0]!;
 }
