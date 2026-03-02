@@ -61,19 +61,19 @@ export default function Home() {
 
         <div className="container relative text-center max-w-4xl mx-auto">
           <Badge variant="secondary" className="mb-6 gap-2 px-4 py-1.5">
-            <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
-            <span className="text-xs">由 Google Gemini AI 強力驅動</span>
+            <Zap className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
+            <span className="text-xs tracking-widest uppercase font-medium">想到。輸入。即刻生成。</span>
           </Badge>
 
           <h1 className="font-display text-5xl md:text-7xl font-bold leading-tight mb-6">
-            用 AI 創作{" "}
+            想象即現實{" "}
             <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
-              震撼視覺
+              INSTANT
             </span>
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-            將您的想像力轉化為令人驚嘆的視覺作品。使用專業級 AI 工具生成、編輯並分享圖像，即時處理、毫秒回饋。
+            一句描述，就是一張作品。INSTANT 將您腦中的畫面在毫秒間轉化為震擼視覺——不需設計經驗，不需軟體授權，只需一個想法。
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -161,8 +161,8 @@ export default function Home() {
       {/* 行動呼籲 */}
       <section className="py-20 px-4 bg-card/30">
         <div className="container max-w-2xl mx-auto text-center">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">準備好開始創作了嗎？</h2>
-          <p className="text-muted-foreground text-lg mb-8">加入數千位已在使用 INSTANT 的創作者行列。</p>
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">下一張傑作，就在下一秒。</h2>
+          <p className="text-muted-foreground text-lg mb-8">超過十萬位創作者正在用 INSTANT 將想法變成作品——現在輪到您了。</p>
           {isAuthenticated ? (
             <Link href="/generate">
               <Button size="lg" className="gap-2 px-10 h-12 text-base">
