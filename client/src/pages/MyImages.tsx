@@ -180,19 +180,24 @@ export default function MyImages() {
                             <p className="text-[10px] text-muted-foreground line-clamp-2 mb-3">
                               {job.errorMessage || "生成失敗"}
                             </p>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="h-7 text-xs gap-1.5 border-destructive/40 hover:border-destructive"
-                              onClick={(e) => { e.stopPropagation(); retryMutation.mutate({ jobId: job.id }); }}
-                              disabled={retryMutation.isPending && retryMutation.variables?.jobId === job.id}
-                            >
-                              {retryMutation.isPending && retryMutation.variables?.jobId === job.id ? (
-                                <><Loader2 className="w-3 h-3 animate-spin" />重試中...</>
-                              ) : (
-                                <><RefreshCw className="w-3 h-3" />重試</>  
-                              )}
-                            </Button>
+                            {(job.retryCount ?? 0) >= 3 ? (
+                              <p className="text-[10px] text-muted-foreground text-center">已達最大重試次數</p>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-7 text-xs gap-1.5 border-destructive/40 hover:border-destructive"
+                                onClick={(e) => { e.stopPropagation(); retryMutation.mutate({ jobId: job.id }); }}
+                                disabled={retryMutation.isPending && retryMutation.variables?.jobId === job.id}
+                                title={`剩餘 ${3 - (job.retryCount ?? 0)} 次重試機會`}
+                              >
+                                {retryMutation.isPending && retryMutation.variables?.jobId === job.id ? (
+                                  <><Loader2 className="w-3 h-3 animate-spin" />重試中...</>
+                                ) : (
+                                  <><RefreshCw className="w-3 h-3" />重試 ({3 - (job.retryCount ?? 0)})</>
+                                )}
+                              </Button>
+                            )}
                           </div>
                         ) : (
                           <XCircle className="w-8 h-8 text-muted-foreground" />

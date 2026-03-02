@@ -112,6 +112,8 @@ export default function Generate() {
   const hasEnoughCredits = (creditData?.credits ?? 0) >= creditCost;
   const isProcessing = jobUpdate?.status === "processing" || jobUpdate?.status === "pending" || createJob.isPending || retryJob.isPending;
   const isFailed = jobUpdate?.status === "failed" && !isProcessing;
+  const currentRetryCount = (jobUpdate as any)?.retryCount ?? 0;
+  const hasRetriesLeft = currentRetryCount < 3;
 
   return (
     <div className="min-h-full p-6">
@@ -284,21 +286,26 @@ export default function Generate() {
                       <p className="text-sm text-muted-foreground max-w-xs mx-auto">{jobUpdate?.message || "發生未知錯誤"}</p>
                     </div>
                     <div className="flex flex-col gap-2 items-center">
-                      <Button
-                        size="sm"
-                        className="gap-2 min-w-[140px]"
-                        onClick={() => currentJobId && retryJob.mutate({ jobId: currentJobId })}
-                        disabled={retryJob.isPending || !hasEnoughCredits}
-                      >
-                        {retryJob.isPending ? (
-                          <><Loader2 className="w-4 h-4 animate-spin" />重試中...</>
-                        ) : (
-                          <><RefreshCw className="w-4 h-4" />重試 — {creditCost} 積分</>
-                        )}
-                      </Button>
-                      {!hasEnoughCredits && (
+                      {!hasRetriesLeft ? (
+                        <p className="text-sm text-muted-foreground">已達最大重試次數（3 次）</p>
+                      ) : (
+                        <Button
+                          size="sm"
+                          className="gap-2 min-w-[140px]"
+                          onClick={() => currentJobId && retryJob.mutate({ jobId: currentJobId })}
+                          disabled={retryJob.isPending || !hasEnoughCredits}
+                          title={`剩餘 ${3 - currentRetryCount} 次重試機會`}
+                        >
+                          {retryJob.isPending ? (
+                            <><Loader2 className="w-4 h-4 animate-spin" />重試中...</>
+                          ) : (
+                            <><RefreshCw className="w-4 h-4" />重試 ({3 - currentRetryCount}) — {creditCost} 積分</>
+                          )}
+                        </Button>
+                      )}
+                      {hasRetriesLeft && !hasEnoughCredits && (
                         <p className="text-xs text-destructive">
-                          積分不足，<a href="/credits" className="underline">前往儲值</a>
+                          積分不足，<a href="/credits" className="underline">前往儲値</a>
                         </p>
                       )}
                       <Button

@@ -166,10 +166,18 @@ export const appRouter = router({
           throw new TRPCError({ code: "BAD_REQUEST", message: "只能重試失敗的任務" });
         }
 
+        // Enforce max 3 retries
+        const MAX_RETRIES = 3;
+        const currentRetryCount = originalJob.retryCount ?? 0;
+        if (currentRetryCount >= MAX_RETRIES) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: `已達最大重試次數（${MAX_RETRIES} 次），請重新建立任務`,
+          });
+        }
+
         const creditCost = originalJob.creditCost;
 
-        // Check if credits were already refunded (look for existing refund transaction)
-        // We always re-deduct to ensure correct accounting
         if (user.credits < creditCost) {
           throw new TRPCError({
             code: "PRECONDITION_FAILED",
@@ -184,11 +192,11 @@ export const appRouter = router({
           type: "spend",
           amount: creditCost,
           balanceAfter: newBalance,
-          description: `重試任務 #${originalJob.id}`,
+          description: `重試任務 #${originalJob.id}（第 ${currentRetryCount + 1} 次）`,
           referenceType: "image_job",
         });
 
-        // Create a new job with the same parameters
+        // Create a new job with the same parameters, incrementing retryCount
         const newJob = await createImageJob({
           userId: user.id,
           jobType: originalJob.jobType,
@@ -201,12 +209,19 @@ export const appRouter = router({
           isPublic: originalJob.isPublic ?? false,
           creditCost,
           status: "pending",
+          retryCount: currentRetryCount + 1,
         });
 
         // Process asynchronously
         processImageJob(newJob.id, user.id).catch(console.error);
 
-        return { jobId: newJob.id, creditCost, creditsRemaining: newBalance };
+        return {
+          jobId: newJob.id,
+          creditCost,
+          creditsRemaining: newBalance,
+          retryCount: currentRetryCount + 1,
+          retriesLeft: MAX_RETRIES - (currentRetryCount + 1),
+        };
       }),
 
     // Credit costs info

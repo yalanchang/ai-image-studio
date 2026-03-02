@@ -11,7 +11,10 @@ import type { Request } from "express";
 import * as db from "../db";
 
 const AUTH0_DOMAIN = process.env.VITE_AUTH0_DOMAIN ?? "";
-const AUTH0_AUDIENCE = process.env.VITE_AUTH0_AUDIENCE ?? "";
+// NOTE: We intentionally do NOT use VITE_AUTH0_AUDIENCE here.
+// The Manus platform injects a value that is not a valid Auth0 API identifier.
+// Without a custom audience, Auth0 issues opaque tokens for /userinfo.
+const AUTH0_AUDIENCE = undefined;
 
 /**
  * Express middleware that validates Auth0 JWT tokens.
@@ -24,7 +27,7 @@ export const checkJwt = expressjwt({
     jwksRequestsPerMinute: 5,
     jwksUri: `https://${AUTH0_DOMAIN}/.well-known/jwks.json`,
   }) as GetVerificationKey,
-  audience: AUTH0_AUDIENCE || undefined,
+  audience: AUTH0_AUDIENCE,
   issuer: `https://${AUTH0_DOMAIN}/`,
   algorithms: ["RS256"],
   credentialsRequired: false, // allow public procedures to pass through

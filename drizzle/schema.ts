@@ -66,6 +66,7 @@ export const imageJobs = mysqlTable("image_jobs", {
   errorMessage: text("errorMessage"),
   metadata: json("metadata"),
   isPublic: boolean("isPublic").default(false).notNull(),
+  retryCount: int("retryCount").default(0).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   completedAt: timestamp("completedAt"),

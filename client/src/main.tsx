@@ -10,7 +10,10 @@ import "./index.css";
 
 const AUTH0_DOMAIN = import.meta.env.VITE_AUTH0_DOMAIN as string;
 const AUTH0_CLIENT_ID = import.meta.env.VITE_AUTH0_CLIENT_ID as string;
-const AUTH0_AUDIENCE = import.meta.env.VITE_AUTH0_AUDIENCE as string | undefined;
+// NOTE: We intentionally do NOT use VITE_AUTH0_AUDIENCE here.
+// The Manus platform injects a value for this env var that is not a valid
+// Auth0 API identifier, which causes "Service not found" / access_denied errors.
+// Auth0 will use the default /userinfo endpoint without an audience parameter.
 
 // Stable QueryClient — created once outside React tree
 const queryClient = new QueryClient({
@@ -56,11 +59,8 @@ function TrpcProvider({ children }: { children: React.ReactNode }) {
 
               if (isAuthenticated) {
                 try {
-                  const token = await getTokenRef.current({
-                    authorizationParams: AUTH0_AUDIENCE
-                      ? { audience: AUTH0_AUDIENCE }
-                      : undefined,
-                  });
+                  // No audience param — use default Auth0 /userinfo endpoint
+                  const token = await getTokenRef.current();
                   if (token) headers["Authorization"] = `Bearer ${token}`;
                 } catch {
                   // Token refresh failed — proceed unauthenticated
@@ -97,7 +97,6 @@ createRoot(document.getElementById("root")!).render(
     clientId={AUTH0_CLIENT_ID}
     authorizationParams={{
       redirect_uri: window.location.origin,
-      ...(AUTH0_AUDIENCE ? { audience: AUTH0_AUDIENCE } : {}),
       scope: "openid profile email",
     }}
     onRedirectCallback={(appState) => {

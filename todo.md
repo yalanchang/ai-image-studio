@@ -77,3 +77,18 @@
 - [x] 修復 main.tsx tRPC client 每次渲染重建導致 client[procedureType] is not a function
 - [x] 清理 Generate.tsx 重複的 trpc import
 - [x] 清理 MyImages.tsx / Credits.tsx 殘留的 useAuth / getLoginUrl
+
+## Auth0 登入跳回首頁 Bug
+- [x] 排查登入/註冊按鈕點擊後跳回首頁的原因（VITE_AUTH0_AUDIENCE 無效導致 access_denied）
+- [x] 修復 main.tsx 移除無效的 VITE_AUTH0_AUDIENCE（Manus 平台注入的值不是有效 Auth0 API Identifier）
+- [x] 修復 server/_core/auth0.ts 移除無效的 AUTH0_AUDIENCE
+- [x] 修復 main.tsx JSX 語法錯誤（authorizationParams: {} → authorizationParams={{}}）
+- [x] Auth0 登入頁面正常顯示（Email/Password + Google 社交登入）
+
+## 待完成功能
+- [x] 重試次數限制（最多 3 次）
+- [x] 新增 retryCount 欄位至 image_jobs 表，推送 DB migration
+- [x] 前端重試按鈕顯示剩餘次數，達上限後顯示禁用訊息
+- [x] Vitest 測試更新（20 個測試全部通過）
+- [ ] 圖片上傳功能（風格遷移用）
+- [ ] Auth0 Application Name 更新為 INSTANT（目前顯示 My App）

@@ -211,7 +211,7 @@ describe("images.retry", () => {
     createImageJob = db.createImageJob as ReturnType<typeof vi.fn>;
 
     vi.clearAllMocks();
-    // Default: failed job owned by user 1
+    // Default: failed job owned by user 1, no previous retries
     getImageJobById.mockResolvedValue({
       id: 42,
       userId: 1,
@@ -222,8 +222,9 @@ describe("images.retry", () => {
       quality: "standard",
       aspectRatio: "1:1",
       isPublic: false,
+      retryCount: 0,
     });
-    createImageJob.mockResolvedValue({ id: 99, userId: 1, prompt: "a sunset", jobType: "generate", status: "pending", creditCost: 10 });
+    createImageJob.mockResolvedValue({ id: 99, userId: 1, prompt: "a sunset", jobType: "generate", status: "pending", creditCost: 10, retryCount: 1 });
     updateUserCredits.mockResolvedValue(90);
     createCreditTransaction.mockResolvedValue(undefined);
   });
@@ -234,8 +235,12 @@ describe("images.retry", () => {
     expect(result.jobId).toBe(99);
     expect(result.creditCost).toBe(10);
     expect(result.creditsRemaining).toBe(90);
+    expect(result.retryCount).toBe(1);
+    expect(result.retriesLeft).toBe(2);
     expect(updateUserCredits).toHaveBeenCalledWith(1, -10);
     expect(createCreditTransaction).toHaveBeenCalledWith(expect.objectContaining({ type: "spend", amount: 10 }));
+    // New job should have retryCount incremented
+    expect(createImageJob).toHaveBeenCalledWith(expect.objectContaining({ retryCount: 1 }));
   });
 
   it("積分不足時拋出 PRECONDITION_FAILED", async () => {
@@ -255,9 +260,31 @@ describe("images.retry", () => {
   it("重試其他用戶的任務時拋出 NOT_FOUND", async () => {
     getImageJobById.mockResolvedValue({
       id: 42, userId: 999, prompt: "a sunset", jobType: "generate",
-      status: "failed", creditCost: 10, quality: "standard", aspectRatio: "1:1", isPublic: false,
+      status: "failed", creditCost: 10, quality: "standard", aspectRatio: "1:1", isPublic: false, retryCount: 0,
     });
     const caller = appRouter.createCaller(makeCtx(makeUser({ credits: 100 })));
     await expect(caller.images.retry({ jobId: 42 })).rejects.toThrow("找不到此任務");
+  });
+
+  it("已達最大重試次數（3 次）時拋出 BAD_REQUEST", async () => {
+    getImageJobById.mockResolvedValue({
+      id: 42, userId: 1, prompt: "a sunset", jobType: "generate",
+      status: "failed", creditCost: 10, quality: "standard", aspectRatio: "1:1", isPublic: false, retryCount: 3,
+    });
+    const caller = appRouter.createCaller(makeCtx(makeUser({ credits: 100 })));
+    await expect(caller.images.retry({ jobId: 42 })).rejects.toThrow("已達最大重試次數");
+  });
+
+  it("重試次數為 2 時仍可重試，剩餘 1 次", async () => {
+    getImageJobById.mockResolvedValue({
+      id: 42, userId: 1, prompt: "a sunset", jobType: "generate",
+      status: "failed", creditCost: 10, quality: "standard", aspectRatio: "1:1", isPublic: false, retryCount: 2,
+    });
+    createImageJob.mockResolvedValue({ id: 100, userId: 1, prompt: "a sunset", jobType: "generate", status: "pending", creditCost: 10, retryCount: 3 });
+    const caller = appRouter.createCaller(makeCtx(makeUser({ credits: 100 })));
+    const result = await caller.images.retry({ jobId: 42 });
+    expect(result.retryCount).toBe(3);
+    expect(result.retriesLeft).toBe(0);
+    expect(createImageJob).toHaveBeenCalledWith(expect.objectContaining({ retryCount: 3 }));
   });
 });
