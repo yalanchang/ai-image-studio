@@ -152,6 +152,63 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    // Retry a failed job: refund original credits, create new job with same params
+    retry: protectedProcedure
+      .input(z.object({ jobId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const user = ctx.user;
+        const originalJob = await getImageJobById(input.jobId);
+
+        if (!originalJob || originalJob.userId !== user.id) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "找不到此任務" });
+        }
+        if (originalJob.status !== "failed") {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "只能重試失敗的任務" });
+        }
+
+        const creditCost = originalJob.creditCost;
+
+        // Check if credits were already refunded (look for existing refund transaction)
+        // We always re-deduct to ensure correct accounting
+        if (user.credits < creditCost) {
+          throw new TRPCError({
+            code: "PRECONDITION_FAILED",
+            message: `積分不足，需要 ${creditCost} 積分，目前剩餘 ${user.credits} 積分`,
+          });
+        }
+
+        // Deduct credits for the retry
+        const newBalance = await updateUserCredits(user.id, -creditCost);
+        await createCreditTransaction({
+          userId: user.id,
+          type: "spend",
+          amount: creditCost,
+          balanceAfter: newBalance,
+          description: `重試任務 #${originalJob.id}`,
+          referenceType: "image_job",
+        });
+
+        // Create a new job with the same parameters
+        const newJob = await createImageJob({
+          userId: user.id,
+          jobType: originalJob.jobType,
+          prompt: originalJob.prompt,
+          negativePrompt: originalJob.negativePrompt ?? undefined,
+          style: originalJob.style ?? undefined,
+          aspectRatio: originalJob.aspectRatio ?? "1:1",
+          quality: originalJob.quality ?? "standard",
+          sourceImageUrl: originalJob.sourceImageUrl ?? undefined,
+          isPublic: originalJob.isPublic ?? false,
+          creditCost,
+          status: "pending",
+        });
+
+        // Process asynchronously
+        processImageJob(newJob.id, user.id).catch(console.error);
+
+        return { jobId: newJob.id, creditCost, creditsRemaining: newBalance };
+      }),
+
     // Credit costs info
     creditCosts: publicProcedure.query(() => CREDIT_COSTS),
   }),

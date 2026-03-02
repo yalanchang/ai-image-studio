@@ -54,3 +54,9 @@
 
 ## Bug 修復
 - [x] 修復 createImageJob / createGalleryItem insertId 為 NaN 導致查詢失敗
+
+## 重試功能
+- [x] 後端：新增 images.retry tRPC 路由（退還積分 + 重新提交任務）
+- [x] 前端 Generate 頁面：失敗時顯示重試按鈕
+- [x] 前端 MyImages 頁面：失敗的圖片卡片顯示重試按鈕
+- [x] 新增重試相關 Vitest 測試（18 個測試全部通過）

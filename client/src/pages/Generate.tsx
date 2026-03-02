@@ -59,6 +59,18 @@ export default function Generate() {
 
   const { data: creditData, refetch: refetchCredits } = trpc.credits.balance.useQuery(undefined, { enabled: isAuthenticated });
   const optimizePrompt = trpc.prompt.optimize.useMutation();
+  const utils = trpc.useUtils();
+
+  const retryJob = trpc.images.retry.useMutation({
+    onSuccess: (data) => {
+      setCurrentJobId(data.jobId);
+      setResultImage(null);
+      toast.info(`重試已開始！消耗 ${data.creditCost} 積分`);
+      refetchCredits();
+    },
+    onError: (err) => toast.error(`重試失敗：${err.message}`),
+  });
+
   const createJob = trpc.images.create.useMutation({
     onSuccess: (data) => {
       setCurrentJobId(data.jobId);
@@ -98,7 +110,8 @@ export default function Generate() {
 
   const creditCost = 10 * (quality === "standard" ? 1 : quality === "hd" ? 2 : 3);
   const hasEnoughCredits = (creditData?.credits ?? 0) >= creditCost;
-  const isProcessing = jobUpdate?.status === "processing" || jobUpdate?.status === "pending" || createJob.isPending;
+  const isProcessing = jobUpdate?.status === "processing" || jobUpdate?.status === "pending" || createJob.isPending || retryJob.isPending;
+  const isFailed = jobUpdate?.status === "failed" && !isProcessing;
 
   return (
     <div className="min-h-full p-6">
@@ -263,10 +276,43 @@ export default function Generate() {
                       </Button>
                     </div>
                   </div>
-                ) : jobUpdate?.status === "failed" ? (
-                  <div className="text-center">
-                    <XCircle className="w-12 h-12 text-destructive mx-auto mb-3" />
-                    <p className="text-sm text-muted-foreground">{jobUpdate.message}</p>
+                ) : isFailed ? (
+                  <div className="text-center space-y-4">
+                    <XCircle className="w-12 h-12 text-destructive mx-auto" />
+                    <div>
+                      <p className="font-medium text-destructive mb-1">生成失敗</p>
+                      <p className="text-sm text-muted-foreground max-w-xs mx-auto">{jobUpdate?.message || "發生未知錯誤"}</p>
+                    </div>
+                    <div className="flex flex-col gap-2 items-center">
+                      <Button
+                        size="sm"
+                        className="gap-2 min-w-[140px]"
+                        onClick={() => currentJobId && retryJob.mutate({ jobId: currentJobId })}
+                        disabled={retryJob.isPending || !hasEnoughCredits}
+                      >
+                        {retryJob.isPending ? (
+                          <><Loader2 className="w-4 h-4 animate-spin" />重試中...</>
+                        ) : (
+                          <><RefreshCw className="w-4 h-4" />重試 — {creditCost} 積分</>
+                        )}
+                      </Button>
+                      {!hasEnoughCredits && (
+                        <p className="text-xs text-destructive">
+                          積分不足，<a href="/credits" className="underline">前往儲值</a>
+                        </p>
+                      )}
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-xs text-muted-foreground gap-1.5"
+                        onClick={() => {
+                          if (currentJobId) clearJobUpdate(currentJobId);
+                          setCurrentJobId(null);
+                        }}
+                      >
+                        修改提示詞後重新生成
+                      </Button>
+                    </div>
                   </div>
                 ) : isProcessing ? (
                   <div className="text-center">

@@ -65,6 +65,14 @@ export default function MyImages() {
     onError: (err) => toast.error(err.message),
   });
 
+  const retryMutation = trpc.images.retry.useMutation({
+    onSuccess: (data) => {
+      toast.success(`重試任務已開始！消耗 ${data.creditCost} 積分，新任務 #${data.jobId}`);
+      refetch();
+    },
+    onError: (err) => toast.error(`重試失敗：${err.message}`),
+  });
+
   const togglePublicMutation = trpc.images.togglePublic.useMutation({
     onSuccess: (_, vars) => {
       toast.success(vars.isPublic ? "已加入社群圖庫" : "已從社群圖庫移除");
@@ -166,6 +174,26 @@ export default function MyImages() {
                           <div className="text-center">
                             <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-2" />
                             <p className="text-xs text-muted-foreground">處理中...</p>
+                          </div>
+                        ) : job.status === "failed" ? (
+                          <div className="text-center px-3">
+                            <XCircle className="w-8 h-8 text-destructive mx-auto mb-2" />
+                            <p className="text-[10px] text-muted-foreground line-clamp-2 mb-3">
+                              {job.errorMessage || "生成失敗"}
+                            </p>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-7 text-xs gap-1.5 border-destructive/40 hover:border-destructive"
+                              onClick={(e) => { e.stopPropagation(); retryMutation.mutate({ jobId: job.id }); }}
+                              disabled={retryMutation.isPending && retryMutation.variables?.jobId === job.id}
+                            >
+                              {retryMutation.isPending && retryMutation.variables?.jobId === job.id ? (
+                                <><Loader2 className="w-3 h-3 animate-spin" />重試中...</>
+                              ) : (
+                                <><RefreshCw className="w-3 h-3" />重試</>  
+                              )}
+                            </Button>
                           </div>
                         ) : (
                           <XCircle className="w-8 h-8 text-muted-foreground" />
