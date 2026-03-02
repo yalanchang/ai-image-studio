@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
+import { useAuth0 } from "@auth0/auth0-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -25,10 +24,17 @@ const navItems = [
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [location] = useLocation();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, isLoading, user: auth0User, loginWithRedirect, logout: auth0Logout } = useAuth0();
+  const { data: dbUser } = trpc.auth.me.useQuery(undefined, { enabled: isAuthenticated, retry: false, refetchOnWindowFocus: false });
   const { data: creditData } = trpc.credits.balance.useQuery(undefined, { enabled: isAuthenticated });
 
+  const user = dbUser;
   const isAdmin = user?.role === "admin";
+  const displayName = user?.name ?? auth0User?.name ?? "使用者";
+  const avatarUrl = auth0User?.picture;
+
+  const handleLogin = () => loginWithRedirect({ appState: { returnTo: window.location.pathname } });
+  const handleLogout = () => auth0Logout({ logoutParams: { returnTo: window.location.origin } });
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -97,12 +103,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-sidebar-accent transition-colors">
                   <Avatar className="w-8 h-8">
+                    <AvatarImage src={avatarUrl} />
                     <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                      {user?.name?.[0]?.toUpperCase() ?? "U"}
+                      {displayName[0]?.toUpperCase() ?? "U"}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0 text-left">
-                    <div className="text-sm font-medium text-sidebar-foreground truncate">{user?.name ?? "使用者"}</div>
+                    <div className="text-sm font-medium text-sidebar-foreground truncate">{displayName}</div>
                     <div className="text-xs text-muted-foreground capitalize">
                       {user?.role === "admin" ? "管理員" : user?.role === "premium" ? "高級會員" : "一般會員"}
                     </div>
@@ -114,14 +121,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                   <Link href="/my-images"><User className="w-4 h-4 mr-2" />我的圖片</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={logout} className="text-destructive">
+                <DropdownMenuItem onClick={handleLogout} className="text-destructive">
                   <LogOut className="w-4 h-4 mr-2" />登出
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button className="w-full" onClick={() => window.location.href = getLoginUrl()}>
-              登入
+            <Button className="w-full" onClick={handleLogin}>
+              登入 / 註冊
             </Button>
           )}
         </div>
@@ -140,9 +147,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <Menu className="w-5 h-5" />
           </button>
           <div className="flex-1" />
-          {!isAuthenticated && (
-            <Button size="sm" onClick={() => window.location.href = getLoginUrl()}>
-              <Zap className="w-4 h-4 mr-1.5" />登入開始創作
+          {!isAuthenticated && !isLoading && (
+            <Button size="sm" onClick={handleLogin}>
+              <Zap className="w-4 h-4 mr-1.5" />登入 / 註冊
             </Button>
           )}
           {isAuthenticated && (

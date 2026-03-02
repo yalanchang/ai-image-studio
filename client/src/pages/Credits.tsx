@@ -1,6 +1,5 @@
 import { trpc } from "@/lib/trpc";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
+import { useAuth0 } from "@auth0/auth0-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -23,7 +22,7 @@ const TX_TYPE_LABELS: Record<string, string> = {
 };
 
 export default function Credits() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
   const { data: creditData, refetch: refetchCredits } = trpc.credits.balance.useQuery(undefined, { enabled: isAuthenticated });
   const { data: historyData, isLoading: historyLoading } = trpc.credits.history.useQuery({ page: 1, limit: 20 }, { enabled: isAuthenticated });
   const { data: packages } = trpc.credits.packages.useQuery();
@@ -41,7 +40,7 @@ export default function Credits() {
       <div className="flex flex-col items-center justify-center min-h-full py-20 px-4 text-center">
         <Coins className="w-12 h-12 text-muted-foreground mb-4" />
         <h2 className="font-display text-xl font-semibold mb-2">請先登入以管理積分</h2>
-        <Button onClick={() => window.location.href = getLoginUrl()}>登入</Button>
+        <Button onClick={() => loginWithRedirect({ appState: { returnTo: "/credits" } })}>登入</Button>
       </div>
     );
   }

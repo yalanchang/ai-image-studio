@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
-import { useAuth } from "@/_core/hooks/useAuth";
+import { useAuth0 } from "@auth0/auth0-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,8 @@ function StatCard({ icon: Icon, label, value, sub, color = "text-primary" }: {
 }
 
 export default function Admin() {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth0();
+  const { data: user } = trpc.auth.me.useQuery(undefined, { enabled: isAuthenticated, retry: false });
   const [search, setSearch] = useState("");
   const [grantUserId, setGrantUserId] = useState<number | null>(null);
   const [grantAmount, setGrantAmount] = useState("");

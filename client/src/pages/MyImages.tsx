@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
+import { useAuth0 } from "@auth0/auth0-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -46,7 +45,7 @@ const JOB_TYPE_LABELS: Record<string, string> = {
 };
 
 export default function MyImages() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -87,7 +86,7 @@ export default function MyImages() {
         <Images className="w-12 h-12 text-muted-foreground mb-4" />
         <h2 className="font-display text-xl font-semibold mb-2">請先登入以查看您的圖片</h2>
         <p className="text-muted-foreground mb-6">您生成的所有圖像都會顯示在這裡</p>
-        <Button onClick={() => window.location.href = getLoginUrl()}>登入</Button>
+        <Button onClick={() => loginWithRedirect({ appState: { returnTo: "/my-images" } })}>登入</Button>
       </div>
     );
   }

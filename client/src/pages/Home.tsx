@@ -1,6 +1,5 @@
 import { Link } from "wouter";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
+import { useAuth0 } from "@auth0/auth0-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Zap, Sparkles, Images, Shield, ArrowRight, Star, Wand2, Layers, Clock } from "lucide-react";
@@ -22,7 +21,8 @@ const stats = [
 ];
 
 export default function Home() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
+  const handleLogin = () => loginWithRedirect({ appState: { returnTo: "/generate" } });
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -45,8 +45,8 @@ export default function Home() {
                 <Button size="sm"><Sparkles className="w-4 h-4 mr-1.5" />開始創作</Button>
               </Link>
             ) : (
-              <Button size="sm" onClick={() => window.location.href = getLoginUrl()}>
-                <Zap className="w-4 h-4 mr-1.5" />免費開始使用
+              <Button size="sm" onClick={handleLogin}>
+                <Zap className="w-4 h-4 mr-1.5" />免費註冊
               </Button>
             )}
           </div>
@@ -85,8 +85,8 @@ export default function Home() {
                 </Button>
               </Link>
             ) : (
-              <Button size="lg" className="gap-2 px-8 h-12 text-base" onClick={() => window.location.href = getLoginUrl()}>
-                <Sparkles className="w-5 h-5" />免費開始 — 贈送 100 積分
+              <Button size="lg" className="gap-2 px-8 h-12 text-base" onClick={handleLogin}>
+                <Sparkles className="w-5 h-5" />免費註冊 — 贈送 100 積分
                 <ArrowRight className="w-4 h-4" />
               </Button>
             )}
@@ -170,8 +170,8 @@ export default function Home() {
               </Button>
             </Link>
           ) : (
-            <Button size="lg" className="gap-2 px-10 h-12 text-base" onClick={() => window.location.href = getLoginUrl()}>
-              <Zap className="w-5 h-5" />免費開始使用
+            <Button size="lg" className="gap-2 px-10 h-12 text-base" onClick={handleLogin}>
+              <Zap className="w-5 h-5" />免費註冊
             </Button>
           )}
         </div>

@@ -8,6 +8,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { initSocketIO } from "../jobQueue";
+import { checkJwt } from "./auth0";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -38,6 +39,9 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
+  // Auth0 JWT verification middleware (runs before tRPC, non-blocking)
+  app.use("/api/trpc", checkJwt);
+
   // tRPC API
   app.use(
     "/api/trpc",

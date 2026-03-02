@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
-import { useAuth } from "@/_core/hooks/useAuth";
+import { useAuth0 } from "@auth0/auth0-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Heart, Download, Sparkles, Loader2, Star } from "lucide-react";
 
 export default function Gallery() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth0();
   const [page, setPage] = useState(1);
 
   const { data, isLoading, refetch } = trpc.gallery.list.useQuery({ page, limit: 20, featured: false });

@@ -63,3 +63,17 @@
 
 ## 品牌標語改寫
 - [x] 改寫首頁 Hero 主標題、副標題與 CTA 文案
+
+## Auth0 整合
+- [ ] 取得 Auth0 憑證並設定環境變數
+- [ ] 安裝 @auth0/auth0-react 與後端 JWT 驗證套件
+- [ ] 後端：替換 Manus OAuth 為 Auth0 JWT 驗證中介層
+- [ ] 後端：用戶首次登入自動建立/同步資料庫記錄
+- [ ] 前端：Auth0Provider 包裹 App，替換所有登入/登出邏輯
+- [ ] 前端：更新 useAuth hook 使用 Auth0 狀態
+- [ ] 更新 Vitest 測試
+
+## Auth0 整合 Bug 修復
+- [x] 修復 main.tsx tRPC client 每次渲染重建導致 client[procedureType] is not a function
+- [x] 清理 Generate.tsx 重複的 trpc import
+- [x] 清理 MyImages.tsx / Credits.tsx 殘留的 useAuth / getLoginUrl

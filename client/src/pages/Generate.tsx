@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
+import { useAuth0 } from "@auth0/auth0-react";
 import { useJobSocket } from "@/hooks/useJobSocket";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -45,8 +44,9 @@ const JOB_TYPES = [
 ];
 
 export default function Generate() {
-  const { user, isAuthenticated } = useAuth();
-  const { jobUpdates, clearJobUpdate } = useJobSocket(user?.id);
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
+  const { data: dbUser } = trpc.auth.me.useQuery(undefined, { enabled: isAuthenticated, retry: false, refetchOnWindowFocus: false });
+  const { jobUpdates, clearJobUpdate } = useJobSocket(dbUser?.id);
 
   const [prompt, setPrompt] = useState("");
   const [style, setStyle] = useState("photorealistic");
@@ -94,7 +94,7 @@ export default function Generate() {
   }, [jobUpdate?.status]);
 
   const handleGenerate = () => {
-    if (!isAuthenticated) { window.location.href = getLoginUrl(); return; }
+    if (!isAuthenticated) { loginWithRedirect({ appState: { returnTo: "/generate" } }); return; }
     if (!prompt.trim()) { toast.error("請輸入提示詞"); return; }
     setResultImage(null);
     if (currentJobId) clearJobUpdate(currentJobId);
