@@ -3,7 +3,6 @@ import { appRouter } from "./routers";
 import type { TrpcContext } from "./_core/context";
 import { COOKIE_NAME } from "../shared/const";
 
-// ─── Mock DB helpers ──────────────────────────────────────────────────────────
 vi.mock("./db", () => ({
   getUserImageJobs: vi.fn().mockResolvedValue({ items: [], total: 0 }),
   createImageJob: vi.fn().mockResolvedValue({ id: 1, userId: 1, prompt: "test", jobType: "generate", status: "pending", creditCost: 10 }),
@@ -67,7 +66,6 @@ function makeCtx(user: NonNullable<TrpcContext["user"]> | null = makeUser()): Tr
   };
 }
 
-// ─── Tests ────────────────────────────────────────────────────────────────────
 
 describe("auth.logout", () => {
   it("clears session cookie and returns success", async () => {
@@ -239,7 +237,6 @@ describe("images.retry", () => {
     expect(result.retriesLeft).toBe(2);
     expect(updateUserCredits).toHaveBeenCalledWith(1, -10);
     expect(createCreditTransaction).toHaveBeenCalledWith(expect.objectContaining({ type: "spend", amount: 10 }));
-    // New job should have retryCount incremented
     expect(createImageJob).toHaveBeenCalledWith(expect.objectContaining({ retryCount: 1 }));
   });
 
