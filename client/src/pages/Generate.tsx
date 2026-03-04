@@ -118,16 +118,16 @@ export default function Generate() {
   return (
     <div className="min-h-full p-6">
       <div className="max-w-6xl mx-auto">
-        {/* 標題 */}
+        {}
         <div className="mb-8">
           <h1 className="font-display text-3xl font-bold mb-2">INSTANT</h1>
           <p className="text-muted-foreground">使用 AI 生成與編輯圖像，描述您想創作的內容即可開始。</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-          {/* 控制面板 */}
+          {}
           <div className="lg:col-span-2 space-y-5">
-            {/* 操作類型 */}
+            {}
             <div className="p-4 rounded-xl bg-card border border-border">
               <label className="text-sm font-medium mb-3 block">操作類型</label>
               <div className="grid grid-cols-3 gap-2">
@@ -145,7 +145,7 @@ export default function Generate() {
               </div>
             </div>
 
-            {/* 提示詞 */}
+            {}
             <div className="p-4 rounded-xl bg-card border border-border">
               <div className="flex items-center justify-between mb-2">
                 <label className="text-sm font-medium">提示詞</label>
@@ -164,7 +164,7 @@ export default function Generate() {
               <div className="text-xs text-muted-foreground mt-1.5 text-right">{prompt.length}/2000</div>
             </div>
 
-            {/* 風格與比例 */}
+            {}
             <div className="p-4 rounded-xl bg-card border border-border space-y-3">
               <label className="text-sm font-medium block">風格與格式</label>
               <div className="grid grid-cols-2 gap-3">
@@ -193,7 +193,7 @@ export default function Generate() {
               </div>
             </div>
 
-            {/* 畫質 */}
+            {}
             <div className="p-4 rounded-xl bg-card border border-border">
               <label className="text-sm font-medium mb-3 block">輸出畫質</label>
               <div className="grid grid-cols-3 gap-2">
@@ -210,7 +210,7 @@ export default function Generate() {
               </div>
             </div>
 
-            {/* 公開分享開關 */}
+            {}
             <div className="flex items-center justify-between p-4 rounded-xl bg-card border border-border">
               <div>
                 <div className="text-sm font-medium">分享至圖庫</div>
@@ -224,7 +224,7 @@ export default function Generate() {
               </button>
             </div>
 
-            {/* 生成按鈕 */}
+            {}
             <Button
               className="w-full h-12 text-base gap-2"
               onClick={handleGenerate}
@@ -245,10 +245,10 @@ export default function Generate() {
             )}
           </div>
 
-          {/* 結果預覽面板 */}
+          {}
           <div className="lg:col-span-3">
             <div className="rounded-xl bg-card border border-border overflow-hidden h-full min-h-[500px] flex flex-col">
-              {/* 進度列 */}
+              {}
               {isProcessing && jobUpdate && (
                 <div className="p-4 border-b border-border">
                   <div className="flex items-center justify-between mb-2">
@@ -259,7 +259,7 @@ export default function Generate() {
                 </div>
               )}
 
-              {/* 圖像結果 */}
+              {}
               <div className="flex-1 flex items-center justify-center p-6">
                 {resultImage ? (
                   <div className="w-full">

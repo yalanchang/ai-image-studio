@@ -10,12 +10,7 @@ import "./index.css";
 
 const AUTH0_DOMAIN = import.meta.env.VITE_AUTH0_DOMAIN as string;
 const AUTH0_CLIENT_ID = import.meta.env.VITE_AUTH0_CLIENT_ID as string;
-// NOTE: We intentionally do NOT use VITE_AUTH0_AUDIENCE here.
-// The Manus platform injects a value for this env var that is not a valid
-// Auth0 API identifier, which causes "Service not found" / access_denied errors.
-// Auth0 will use the default /userinfo endpoint without an audience parameter.
 
-// Stable QueryClient — created once outside React tree
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { retry: false, refetchOnWindowFocus: false },
@@ -34,16 +29,9 @@ queryClient.getMutationCache().subscribe((event) => {
   }
 });
 
-/**
- * TrpcProvider — must live inside Auth0Provider so it can call useAuth0.
- * The tRPC client is memoised on `isAuthenticated` so it is only recreated
- * when the auth state actually changes (logged-in ↔ logged-out), NOT on every render.
- */
 function TrpcProvider({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
 
-  // Keep a stable ref to getAccessTokenSilently so the fetch closure below
-  // always calls the latest version without triggering a client rebuild.
   const getTokenRef = useRef(getAccessTokenSilently);
   getTokenRef.current = getAccessTokenSilently;
 
@@ -59,11 +47,11 @@ function TrpcProvider({ children }: { children: React.ReactNode }) {
 
               if (isAuthenticated) {
                 try {
-                  // No audience param — use default Auth0 /userinfo endpoint
+
                   const token = await getTokenRef.current();
                   if (token) headers["Authorization"] = `Bearer ${token}`;
                 } catch {
-                  // Token refresh failed — proceed unauthenticated
+
                 }
               }
 
@@ -79,8 +67,7 @@ function TrpcProvider({ children }: { children: React.ReactNode }) {
           }),
         ],
       }),
-    // Only rebuild the client when auth state changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     [isAuthenticated]
   );
 

@@ -7,7 +7,6 @@ import { nanoid } from "nanoid";
 
 export let io: SocketIOServer | null = null;
 
-// In-memory concurrency limiter
 const MAX_CONCURRENT = 5;
 let activeJobs = 0;
 const pendingQueue: (() => void)[] = [];
@@ -48,7 +47,6 @@ export function emitJobUpdate(userId: number, jobId: number, data: Record<string
   if (io) io.to(`user:${userId}`).emit("job:update", { jobId, ...data });
 }
 
-// Credit costs per operation
 export const CREDIT_COSTS: Record<string, number> = {
   generate: 10,
   edit: 15,
@@ -79,7 +77,6 @@ export async function processImageJob(jobId: number, userId: number) {
     const job = await getImageJobById(jobId);
     if (!job) throw new Error("Job not found");
 
-    // Step 1: Optimize prompt if not already done
     let finalPrompt = job.optimizedPrompt || job.prompt;
     if (!job.optimizedPrompt) {
       emitJobUpdate(userId, jobId, { status: "processing", progress: 20, message: "Optimizing prompt..." });
@@ -103,7 +100,6 @@ export async function processImageJob(jobId: number, userId: number) {
 
     emitJobUpdate(userId, jobId, { status: "processing", progress: 40, message: "Generating image with AI..." });
 
-    // Step 2: Generate or edit image
     let imageUrl: string;
     if (job.jobType === "generate") {
       const stylePrefix = job.style ? `${job.style} style, ` : "";
@@ -127,7 +123,6 @@ export async function processImageJob(jobId: number, userId: number) {
 
     emitJobUpdate(userId, jobId, { status: "processing", progress: 75, message: "Saving image to storage..." });
 
-    // Step 3: Upload to S3
     const imageRes = await fetch(imageUrl);
     const imageBuffer = Buffer.from(await imageRes.arrayBuffer());
     const fileKey = `generated/${userId}/${jobId}-${nanoid(8)}.png`;
@@ -135,7 +130,6 @@ export async function processImageJob(jobId: number, userId: number) {
 
     emitJobUpdate(userId, jobId, { status: "processing", progress: 90, message: "Finalizing..." });
 
-    // Step 4: Update job as completed
     await updateImageJob(jobId, {
       status: "completed",
       resultImageUrl: s3Url,
@@ -144,7 +138,6 @@ export async function processImageJob(jobId: number, userId: number) {
       completedAt: new Date(),
     });
 
-    // Step 5: Update user total generated count
     const user = await getUserById(userId);
     if (user) {
       const db = (await import("./db")).getDb();
@@ -163,7 +156,6 @@ export async function processImageJob(jobId: number, userId: number) {
       resultImageUrl: s3Url,
     });
 
-    // Step 6: Auto-create gallery item if job is public
     if (job.isPublic && user) {
       await createGalleryItem({
         jobId,
@@ -182,7 +174,6 @@ export async function processImageJob(jobId: number, userId: number) {
     await updateImageJob(jobId, { status: "failed", errorMessage: errorMsg });
     emitJobUpdate(userId, jobId, { status: "failed", progress: 0, message: errorMsg });
 
-    // Refund credits on failure
     const job = await getImageJobById(jobId);
     if (job && job.creditCost > 0) {
       const newBalance = await updateUserCredits(userId, job.creditCost);

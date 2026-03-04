@@ -11,7 +11,6 @@ import {
   float,
 } from "drizzle-orm/mysql-core";
 
-// ─── Users ────────────────────────────────────────────────────────────────────
 export const users = mysqlTable("users", {
   id: int("id").autoincrement().primaryKey(),
   openId: varchar("openId", { length: 64 }).notNull().unique(),
@@ -31,7 +30,6 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// ─── Image Jobs (generation / editing queue) ──────────────────────────────────
 export const imageJobs = mysqlTable("image_jobs", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull(),
@@ -75,7 +73,6 @@ export const imageJobs = mysqlTable("image_jobs", {
 export type ImageJob = typeof imageJobs.$inferSelect;
 export type InsertImageJob = typeof imageJobs.$inferInsert;
 
-// ─── Credit Transactions ──────────────────────────────────────────────────────
 export const creditTransactions = mysqlTable("credit_transactions", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull(),
@@ -91,7 +88,6 @@ export const creditTransactions = mysqlTable("credit_transactions", {
 export type CreditTransaction = typeof creditTransactions.$inferSelect;
 export type InsertCreditTransaction = typeof creditTransactions.$inferInsert;
 
-// ─── Gallery (public community feed) ─────────────────────────────────────────
 export const galleryItems = mysqlTable("gallery_items", {
   id: int("id").autoincrement().primaryKey(),
   jobId: int("jobId").notNull().unique(),
@@ -113,7 +109,6 @@ export const galleryItems = mysqlTable("gallery_items", {
 export type GalleryItem = typeof galleryItems.$inferSelect;
 export type InsertGalleryItem = typeof galleryItems.$inferInsert;
 
-// ─── Gallery Likes ────────────────────────────────────────────────────────────
 export const galleryLikes = mysqlTable("gallery_likes", {
   id: int("id").autoincrement().primaryKey(),
   galleryItemId: int("galleryItemId").notNull(),
@@ -123,7 +118,6 @@ export const galleryLikes = mysqlTable("gallery_likes", {
 
 export type GalleryLike = typeof galleryLikes.$inferSelect;
 
-// ─── Credit Packages (admin-defined recharge options) ─────────────────────────
 export const creditPackages = mysqlTable("credit_packages", {
   id: int("id").autoincrement().primaryKey(),
   name: varchar("name", { length: 128 }).notNull(),

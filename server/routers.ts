@@ -15,13 +15,11 @@ import {
 import { calculateCreditCost, processImageJob, CREDIT_COSTS } from "./jobQueue";
 import { invokeLLM } from "./_core/llm";
 
-// ─── Admin guard ──────────────────────────────────────────────────────────────
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
   if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN", message: "Admin access required" });
   return next({ ctx });
 });
 
-// ─── App Router ───────────────────────────────────────────────────────────────
 export const appRouter = router({
   system: systemRouter,
 
@@ -33,9 +31,8 @@ export const appRouter = router({
     }),
   }),
 
-  // ─── Images ────────────────────────────────────────────────────────────────
   images: router({
-    // Create a new image generation/editing job
+
     create: protectedProcedure
       .input(z.object({
         jobType: z.enum(["generate", "edit", "style_transfer", "background_replace", "object_remove", "upscale"]),
@@ -55,7 +52,6 @@ export const appRouter = router({
           throw new TRPCError({ code: "PRECONDITION_FAILED", message: `Insufficient credits. Need ${creditCost}, have ${user.credits}.` });
         }
 
-        // Deduct credits upfront
         const newBalance = await updateUserCredits(user.id, -creditCost);
         await createCreditTransaction({
           userId: user.id,
@@ -66,7 +62,6 @@ export const appRouter = router({
           referenceType: "image_job",
         });
 
-        // Create job record
         const job = await createImageJob({
           userId: user.id,
           jobType: input.jobType,
@@ -81,7 +76,6 @@ export const appRouter = router({
           status: "pending",
         });
 
-        // Update transaction with job reference
         await createCreditTransaction({
           userId: user.id,
           type: "spend",
@@ -92,13 +86,11 @@ export const appRouter = router({
           referenceType: "image_job",
         }).catch(() => {});
 
-        // Process asynchronously (non-blocking)
         processImageJob(job.id, user.id).catch(console.error);
 
         return { jobId: job.id, creditCost, creditsRemaining: newBalance };
       }),
 
-    // Get job status
     status: protectedProcedure
       .input(z.object({ jobId: z.number() }))
       .query(async ({ ctx, input }) => {
@@ -107,7 +99,6 @@ export const appRouter = router({
         return job;
       }),
 
-    // List user's images with pagination and filters
     list: protectedProcedure
       .input(z.object({
         page: z.number().default(1),
@@ -120,7 +111,6 @@ export const appRouter = router({
         return getUserImageJobs(ctx.user.id, input.page, input.limit, input.search, input.jobType, input.status);
       }),
 
-    // Delete an image
     delete: protectedProcedure
       .input(z.object({ jobId: z.number() }))
       .mutation(async ({ ctx, input }) => {
@@ -128,7 +118,6 @@ export const appRouter = router({
         return { success: true };
       }),
 
-    // Toggle public/private
     togglePublic: protectedProcedure
       .input(z.object({ jobId: z.number(), isPublic: z.boolean() }))
       .mutation(async ({ ctx, input }) => {
@@ -137,7 +126,7 @@ export const appRouter = router({
         await updateImageJob(input.jobId, { isPublic: input.isPublic });
 
         if (input.isPublic && job.status === "completed" && job.resultImageUrl) {
-          // Add to gallery
+
           await createGalleryItem({
             jobId: input.jobId,
             userId: ctx.user.id,
@@ -152,7 +141,6 @@ export const appRouter = router({
         return { success: true };
       }),
 
-    // Retry a failed job: refund original credits, create new job with same params
     retry: protectedProcedure
       .input(z.object({ jobId: z.number() }))
       .mutation(async ({ ctx, input }) => {
@@ -166,7 +154,6 @@ export const appRouter = router({
           throw new TRPCError({ code: "BAD_REQUEST", message: "只能重試失敗的任務" });
         }
 
-        // Enforce max 3 retries
         const MAX_RETRIES = 3;
         const currentRetryCount = originalJob.retryCount ?? 0;
         if (currentRetryCount >= MAX_RETRIES) {
@@ -185,7 +172,6 @@ export const appRouter = router({
           });
         }
 
-        // Deduct credits for the retry
         const newBalance = await updateUserCredits(user.id, -creditCost);
         await createCreditTransaction({
           userId: user.id,
@@ -196,7 +182,6 @@ export const appRouter = router({
           referenceType: "image_job",
         });
 
-        // Create a new job with the same parameters, incrementing retryCount
         const newJob = await createImageJob({
           userId: user.id,
           jobType: originalJob.jobType,
@@ -212,7 +197,6 @@ export const appRouter = router({
           retryCount: currentRetryCount + 1,
         });
 
-        // Process asynchronously
         processImageJob(newJob.id, user.id).catch(console.error);
 
         return {
@@ -224,11 +208,9 @@ export const appRouter = router({
         };
       }),
 
-    // Credit costs info
     creditCosts: publicProcedure.query(() => CREDIT_COSTS),
   }),
 
-  // ─── Prompt Assistant ──────────────────────────────────────────────────────
   prompt: router({
     optimize: protectedProcedure
       .input(z.object({
@@ -241,8 +223,8 @@ export const appRouter = router({
           messages: [
             {
               role: "system" as const,
-              content: `You are an expert AI image generation prompt engineer. Your task is to enhance and optimize image generation prompts to produce better, more detailed, and visually stunning results. 
-              
+              content: `You are an expert AI image generation prompt engineer. Your task is to enhance and optimize image generation prompts to produce better, more detailed, and visually stunning results.
+
               When given a prompt, you should:
               1. Add specific artistic details, lighting descriptions, and composition notes
               2. Include relevant technical photography/art terms
@@ -281,7 +263,6 @@ export const appRouter = router({
       }),
   }),
 
-  // ─── Credits ───────────────────────────────────────────────────────────────
   credits: router({
     balance: protectedProcedure.query(({ ctx }) => ({ credits: ctx.user.credits })),
 
@@ -291,7 +272,6 @@ export const appRouter = router({
 
     packages: publicProcedure.query(() => getCreditPackages()),
 
-    // Simulate recharge (in production, integrate with payment gateway)
     recharge: protectedProcedure
       .input(z.object({ packageId: z.number(), credits: z.number().min(1) }))
       .mutation(async ({ ctx, input }) => {
@@ -309,7 +289,6 @@ export const appRouter = router({
       }),
   }),
 
-  // ─── Gallery ───────────────────────────────────────────────────────────────
   gallery: router({
     list: publicProcedure
       .input(z.object({ page: z.number().default(1), limit: z.number().max(50).default(20), featured: z.boolean().default(false) }))
@@ -328,7 +307,6 @@ export const appRouter = router({
     }),
   }),
 
-  // ─── Admin ─────────────────────────────────────────────────────────────────
   admin: router({
     stats: adminProcedure.query(async () => {
       const [stats, creditStats] = await Promise.all([getAdminStats(), getSystemCreditStats()]);

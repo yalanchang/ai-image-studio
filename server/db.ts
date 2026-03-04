@@ -20,8 +20,6 @@ export async function getDb() {
   return _db;
 }
 
-// ─── Users ────────────────────────────────────────────────────────────────────
-
 export async function upsertUser(user: InsertUser): Promise<void> {
   if (!user.openId) throw new Error("User openId is required");
   const db = await getDb();
@@ -94,8 +92,6 @@ export async function updateUserRole(userId: number, role: "user" | "premium" | 
   await db.update(users).set({ role, updatedAt: new Date() }).where(eq(users.id, userId));
 }
 
-// ─── Image Jobs ───────────────────────────────────────────────────────────────
-
 export async function createImageJob(data: InsertImageJob) {
   const db = await getDb();
   if (!db) throw new Error("DB unavailable");
@@ -148,8 +144,6 @@ export async function deleteImageJob(id: number, userId: number) {
   await db.delete(imageJobs).where(and(eq(imageJobs.id, id), eq(imageJobs.userId, userId)));
 }
 
-// ─── Credit Transactions ──────────────────────────────────────────────────────
-
 export async function createCreditTransaction(data: InsertCreditTransaction) {
   const db = await getDb();
   if (!db) throw new Error("DB unavailable");
@@ -182,8 +176,6 @@ export async function getSystemCreditStats() {
     totalUsers: Number(total[0]?.v ?? 0),
   };
 }
-
-// ─── Gallery ──────────────────────────────────────────────────────────────────
 
 export async function createGalleryItem(data: InsertGalleryItem) {
   const db = await getDb();
@@ -230,8 +222,6 @@ export async function getUserLikedIds(userId: number): Promise<number[]> {
   return r.map(x => x.id);
 }
 
-// ─── Credit Packages ──────────────────────────────────────────────────────────
-
 export async function getCreditPackages() {
   const db = await getDb();
   if (!db) return [];
@@ -247,8 +237,6 @@ export async function upsertCreditPackage(data: typeof creditPackages.$inferInse
     await db.insert(creditPackages).values(data);
   }
 }
-
-// ─── Admin Stats ──────────────────────────────────────────────────────────────
 
 export async function getAdminStats() {
   const db = await getDb();

@@ -86,7 +86,7 @@ export default function Admin() {
             <TabsTrigger value="packages" className="gap-2"><Coins className="w-4 h-4" />積分方案</TabsTrigger>
           </TabsList>
 
-          {/* 系統概覽 */}
+          {}
           <TabsContent value="overview">
             {statsLoading ? (
               <div className="flex items-center justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
@@ -103,7 +103,7 @@ export default function Admin() {
                   <StatCard icon={TrendingUp} label="本週任務" value={stats.jobsWeek ?? 0} sub="過去 7 天" />
                   <StatCard icon={Coins} label="已消耗積分" value={stats.totalSpent ?? 0} sub="累計" color="text-yellow-400" />
                 </div>
-                {/* 系統健康度 */}
+                {}
                 <div className="p-5 rounded-xl bg-card border border-border">
                   <h3 className="font-display font-semibold mb-4">系統健康度</h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -129,7 +129,7 @@ export default function Admin() {
             ) : null}
           </TabsContent>
 
-          {/* 用戶管理 */}
+          {}
           <TabsContent value="users">
             <div className="space-y-4">
               <div className="relative max-w-sm">
@@ -231,10 +231,10 @@ export default function Admin() {
             </div>
           </TabsContent>
 
-          {/* 積分方案 */}
+          {}
           <TabsContent value="packages">
             <div className="space-y-6">
-              {/* 現有方案 */}
+              {}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {packages?.map((pkg) => (
                   <div key={pkg.id} className="p-4 rounded-xl bg-card border border-border">
@@ -249,7 +249,7 @@ export default function Admin() {
                 ))}
               </div>
 
-              {/* 新增方案 */}
+              {}
               <div className="p-5 rounded-xl bg-card border border-border">
                 <h3 className="font-display font-semibold mb-4">新增積分方案</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">

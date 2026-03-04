@@ -38,9 +38,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background flex">
-      {/* 側邊欄 */}
+      {}
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-sidebar border-r border-sidebar-border transform transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
-        {/* Logo */}
+        {}
         <div className="flex items-center gap-3 px-6 py-5 border-b border-sidebar-border">
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
             <Zap className="w-4 h-4 text-primary-foreground" />
@@ -51,7 +51,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </button>
         </div>
 
-        {/* 導航選單 */}
+        {}
         <nav className="flex-1 px-3 py-4 space-y-1">
           {navItems.map(({ href, label, icon: Icon, description }) => {
             const active = location === href;
@@ -82,7 +82,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           )}
         </nav>
 
-        {/* 積分小工具 */}
+        {}
         {isAuthenticated && (
           <div className="px-4 py-3 mx-3 mb-3 rounded-lg bg-sidebar-accent border border-sidebar-border">
             <div className="flex items-center justify-between mb-1">
@@ -96,7 +96,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
         )}
 
-        {/* 使用者區塊 */}
+        {}
         <div className="px-3 pb-4 border-t border-sidebar-border pt-3">
           {isAuthenticated ? (
             <DropdownMenu>
@@ -134,14 +134,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
 
-      {/* 手機版遮罩 */}
+      {}
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 bg-black/60 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
-      {/* 主要內容區 */}
+      {}
       <div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
-        {/* 頂部導覽列 */}
+        {}
         <header className="sticky top-0 z-30 h-14 bg-background/80 backdrop-blur-md border-b border-border flex items-center px-4 gap-4">
           <button className="lg:hidden text-muted-foreground" onClick={() => setSidebarOpen(true)}>
             <Menu className="w-5 h-5" />
@@ -160,7 +160,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           )}
         </header>
 
-        {/* 頁面內容 */}
+        {}
         <main className="flex-1 overflow-auto">
           {children}
         </main>

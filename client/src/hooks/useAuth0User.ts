@@ -1,12 +1,3 @@
-/**
- * Auth0 authentication hook
- *
- * Wraps @auth0/auth0-react's useAuth0 and provides:
- * - isAuthenticated / user state
- * - login() → opens Auth0 Universal Login
- * - logout() → clears Auth0 session
- * - getToken() → returns a fresh access token for API calls
- */
 import { useAuth0 } from "@auth0/auth0-react";
 import { useCallback } from "react";
 

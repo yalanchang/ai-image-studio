@@ -25,7 +25,7 @@ export default function Gallery() {
   return (
     <div className="min-h-full p-6">
       <div className="max-w-7xl mx-auto">
-        {/* 標題 */}
+        {}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="font-display text-3xl font-bold mb-1">社群圖庫</h1>
@@ -58,7 +58,7 @@ export default function Gallery() {
                     className="w-full object-cover"
                     loading="lazy"
                   />
-                  {/* 懸停遮罩 */}
+                  {}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                     <div className="absolute bottom-0 left-0 right-0 p-3">
                       <p className="text-white text-xs line-clamp-2 mb-2">{item.prompt}</p>
@@ -93,7 +93,7 @@ export default function Gallery() {
                       </div>
                     </div>
                   </div>
-                  {/* 風格標籤 */}
+                  {}
                   {item.style && (
                     <div className="absolute top-2 left-2">
                       <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5 bg-black/60 text-white border-0">
@@ -105,7 +105,7 @@ export default function Gallery() {
               ))}
             </div>
 
-            {/* 分頁 */}
+            {}
             {data.total > 20 && (
               <div className="flex items-center justify-center gap-3 mt-10">
                 <Button variant="outline" size="sm" disabled={page === 1} onClick={() => setPage(p => p - 1)}>

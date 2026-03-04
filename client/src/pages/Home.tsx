@@ -26,7 +26,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* 頂部導覽列 */}
+      {}
       <nav className="fixed top-0 inset-x-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-md">
         <div className="container flex items-center h-16 gap-6">
           <div className="flex items-center gap-2.5">
@@ -53,9 +53,9 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero 區塊 */}
+      {}
       <section className="pt-32 pb-20 px-4 relative overflow-hidden">
-        {/* 背景光暈 */}
+        {}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-20 right-1/4 w-64 h-64 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -97,7 +97,7 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* 數據統計 */}
+          {}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20 pt-10 border-t border-border/50">
             {stats.map(({ value, label }) => (
               <div key={label} className="text-center">
@@ -109,7 +109,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 功能特色 */}
+      {}
       <section className="py-20 px-4 bg-card/30">
         <div className="container max-w-6xl mx-auto">
           <div className="text-center mb-14">
@@ -132,7 +132,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 積分方案 */}
+      {}
       <section className="py-20 px-4">
         <div className="container max-w-4xl mx-auto text-center">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">透明積分定價</h2>
@@ -158,7 +158,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 行動呼籲 */}
+      {}
       <section className="py-20 px-4 bg-card/30">
         <div className="container max-w-2xl mx-auto text-center">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">下一張傑作，就在下一秒。</h2>
@@ -177,7 +177,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 頁腳 */}
+      {}
       <footer className="border-t border-border py-8 px-4">
         <div className="container flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">

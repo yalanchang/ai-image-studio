@@ -94,7 +94,7 @@ export default function MyImages() {
   return (
     <div className="min-h-full p-6">
       <div className="max-w-7xl mx-auto">
-        {/* 標題 */}
+        {}
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="font-display text-3xl font-bold mb-1">我的圖片</h1>
@@ -105,7 +105,7 @@ export default function MyImages() {
           </Link>
         </div>
 
-        {/* 篩選器 */}
+        {}
         <div className="flex flex-wrap gap-3 mb-6">
           <div className="relative flex-1 min-w-[200px] max-w-xs">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -163,7 +163,7 @@ export default function MyImages() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {data.items.map((job) => (
                 <div key={job.id} className="group rounded-xl bg-card border border-border overflow-hidden hover:border-primary/50 transition-all">
-                  {/* 圖像 */}
+                  {}
                   <div className="relative aspect-square bg-muted overflow-hidden">
                     {job.resultImageUrl ? (
                       <img src={job.resultImageUrl} alt={job.prompt} className="w-full h-full object-cover" loading="lazy" />
@@ -204,18 +204,18 @@ export default function MyImages() {
                         )}
                       </div>
                     )}
-                    {/* 狀態標籤 */}
+                    {}
                     <div className={`absolute top-2 left-2 flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-black/60 ${STATUS_COLORS[job.status]}`}>
                       {STATUS_ICONS[job.status]}
                       {STATUS_LABELS[job.status] ?? job.status}
                     </div>
-                    {/* 公開標誌 */}
+                    {}
                     {job.isPublic && (
                       <div className="absolute top-2 right-2">
                         <Globe className="w-3.5 h-3.5 text-blue-400" />
                       </div>
                     )}
-                    {/* 操作遮罩 */}
+                    {}
                     {job.resultImageUrl && (
                       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                         <a href={job.resultImageUrl} download target="_blank" className="p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors">
@@ -239,7 +239,7 @@ export default function MyImages() {
                       </div>
                     )}
                   </div>
-                  {/* 資訊 */}
+                  {}
                   <div className="p-3">
                     <p className="text-xs text-foreground line-clamp-2 mb-2">{job.prompt}</p>
                     <div className="flex items-center justify-between">
@@ -256,7 +256,7 @@ export default function MyImages() {
               ))}
             </div>
 
-            {/* 分頁 */}
+            {}
             {data.total > 20 && (
               <div className="flex items-center justify-center gap-3 mt-10">
                 <Button variant="outline" size="sm" disabled={page === 1} onClick={() => setPage(p => p - 1)}>上一頁</Button>

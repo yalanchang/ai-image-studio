@@ -92,3 +92,12 @@
 - [x] Vitest 測試更新（20 個測試全部通過）
 - [ ] 圖片上傳功能（風格遷移用）
 - [ ] Auth0 Application Name 更新為 INSTANT（目前顯示 My App）
+
+## 移除註解 & 中文化登入頁
+- [x] 移除 server/routers.ts 所有註解
+- [x] 移除 server/db.ts 所有註解
+- [x] 移除 server/jobQueue.ts 所有註解
+- [x] 移除 client 各頁面所有註解
+- [x] Auth0 Universal Login 改為全繁體中文
+- [x] 修復 Auth0 Callback URL 間題（添加產歷環境 URL）
+- [x] 驗證登入頁面正常運作

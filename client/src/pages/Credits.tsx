@@ -53,7 +53,7 @@ export default function Credits() {
           <p className="text-muted-foreground">管理您的 AI 生成積分</p>
         </div>
 
-        {/* 餘額卡片 */}
+        {}
         <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/20 to-violet-500/10 border border-primary/30 mb-8">
           <div className="flex items-center justify-between">
             <div>
@@ -69,7 +69,7 @@ export default function Credits() {
           </div>
         </div>
 
-        {/* 積分消耗說明 */}
+        {}
         <div className="p-5 rounded-xl bg-card border border-border mb-8">
           <h3 className="font-display font-semibold mb-4">各操作積分消耗</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -89,7 +89,7 @@ export default function Credits() {
           </div>
         </div>
 
-        {/* 儲值方案 */}
+        {}
         <div className="mb-8">
           <h3 className="font-display font-semibold text-lg mb-4">積分儲值方案</h3>
           {packages && packages.length > 0 ? (
@@ -127,7 +127,7 @@ export default function Credits() {
           )}
         </div>
 
-        {/* 交易記錄 */}
+        {}
         <div>
           <h3 className="font-display font-semibold text-lg mb-4">積分交易記錄</h3>
           {historyLoading ? (
